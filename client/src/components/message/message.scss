@@ -1,0 +1,9 @@
+.message {}
+
+.date {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-right: 1rem;
+  font-size: .7rem;
+}
