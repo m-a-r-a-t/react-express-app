@@ -2,7 +2,6 @@
 @use '@material/button';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
-
 .container {
   width: 30rem;
   height: 30rem;
@@ -10,8 +9,9 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  border: .5px solid #4285f4;
-  box-shadow: 1px 1px 3rem #4285f4;
+ background: white;
+  box-shadow: 1px 1px 1rem black;
+  z-index: 100;
 }
 
 .bottom {
@@ -24,22 +24,26 @@
   }
 }
 
-
-
-
 .messages-screen {
   overflow: auto;
-  padding-left: .5rem;
-
-
+  padding-left: 0.5rem;
 }
 
 ::-webkit-scrollbar {
-  width: .5rem;
-  background-color: #F5F5F5;
+  width: 0.5rem;
+  background-color: #f5f5f5;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background: #4285f4;
 }
+
+@media only screen and (max-device-width: 480px) {
+  .container {
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+  }
+}
+

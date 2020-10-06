@@ -1,23 +1,63 @@
-const express = require('express')
+const app = require('express')()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
+const parser = require('body-parser')
+const {  users, dialogs,  PORT} = require('./store')
+const { getUser} = require('./usersFuncs')
+const { messageCreator} = require('./dialogFuncs')
+const helmet = require('helmet')
+const compression = require('compression')
+//app.get('/', (req, res) => res.json(users))
 
-const server = express()
-
-const PORT = process.env.PORT || 5000
-
-server.get('/api/users', (req, res) => {
-  let users = [
-    { id: 1, name: 'Марат', age: 19 },
-    { id: 2, name: 'Даша', age: 17 },
-    { id: 3, name: 'Маша', age: 19 },
-    { id: 3, name: 'Маша', age: 19 },
-    { id: 3, name: 'Маша', age: 19 },
-    { id: 3, name: 'Маша', age: 19 },
-    { id: 3, name: 'Маша', age: 19 },
-  ]
-
-  res.json(users)
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept')
+  next()
 })
 
-server.listen(PORT, () => {
+app.use(parser.json())
+app.use(parser.urlencoded({extended: true,}))
+app.use(helmet())
+app.use(compression())
+
+
+
+app.post('/login', (req, res) => res.status(200).end())
+
+io.on('connection', (socket) => {
+
+  socket.on('join', ({ name,room,action}, callback) => {  
+
+    room!=null? socket.join(room) : socket.join(socket.id)
+    let roomKey=room? room:socket.id
+    users.push({ id: socket.id, name: name, })
+
+    console.log(`User ${name} connected to room `);
+    callback(messageCreator('SERVER',1,'Welcome to chat !!!'),roomKey)
+
+    socket.broadcast.to(roomKey)
+    .emit('refreshMessages',{ 
+      name:'SERVER',
+      id:Math.floor(Math.random()*10),
+      message:`User ${name} joined !`
+     })
+  })
+
+  socket.on('sendMessage', ({  message,  name,room}) => {
+   // dialogs.push(messageCreator(name, dialogs.length + 1, message))
+   if(message==='')return
+    io.to(room).emit('refreshMessages',{ ...messageCreator(name, Math.floor(Math.random()*10), message) })
+  
+  })
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+    users.splice(users.indexOf(socket), 1)
+    console.log(users)
+  })
+})
+
+http.listen(PORT, () => {
   console.log(`Server started on port : ${PORT}`)
 })
