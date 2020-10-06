@@ -15,7 +15,7 @@ let ChatContainer = ({ state, dispatch }) => {
   }
 
   useEffect(() => {
-    socket = io('http://192.168.1.166:5000')
+    socket = io('https://mysterious-reaches-73136.herokuapp.com/')
     let action =state.room? 'JOIN' : 'CREATE'
     socket.emit('join', { name: state.name,room:state.room,action}, ({ name, id, message },room) => {
       dispatch(messagesActionCreator(name, message, id))
