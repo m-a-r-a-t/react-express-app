@@ -2,7 +2,7 @@ const app = require('express')()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const parser = require('body-parser')
-const {  users, dialogs,  PORT} = require('./store')
+const {  users, PORT} = require('./store')
 const { getUser} = require('./usersFuncs')
 const { messageCreator} = require('./dialogFuncs')
 const helmet = require('helmet')
@@ -27,27 +27,27 @@ app.post('/login', (req, res) => res.status(200).end())
 
 io.on('connection', (socket) => {
 
-  socket.on('join', ({ name,room,action}, callback) => {  
+  socket.on('join', ({ name,room,action,length}, callback) => {  
 
     room!=null? socket.join(room) : socket.join(socket.id)
     let roomKey=room? room:socket.id
     users.push({ id: socket.id, name: name, })
 
-    console.log(`User ${name} connected to room `);
+    console.log(`User ${name} connected to room `)
+
     callback(messageCreator('SERVER',1,'Welcome to chat !!!'),roomKey)
 
-    socket.broadcast.to(roomKey)
-    .emit('refreshMessages',{ 
-      name:'SERVER',
-      id:Math.floor(Math.random()*10),
+    socket.broadcast.to(roomKey).emit('refreshMessages',
+     {
+       name:'SERVER',
+      id:length,
       message:`User ${name} joined !`
      })
   })
 
-  socket.on('sendMessage', ({  message,  name,room}) => {
-   // dialogs.push(messageCreator(name, dialogs.length + 1, message))
+  socket.on('sendMessage', ({ message,name,room,length}) => {
    if(message==='')return
-    io.to(room).emit('refreshMessages',{ ...messageCreator(name, Math.floor(Math.random()*10), message) })
+    io.to(room).emit('refreshMessages',{ ...messageCreator(name, length+1, message) })
   
   })
 
