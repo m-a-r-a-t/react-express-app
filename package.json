@@ -5,6 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build":"cd client && npm run build",
+    "install-client":"cd client && npm install",
+    "heroku-postbuild":"npm run install-client",
+    "client":"cd client && npm start",
     "server": "nodemon server.js"
   },
   "author": "Marat Sabitov <razorlevel@gmail.com>",
