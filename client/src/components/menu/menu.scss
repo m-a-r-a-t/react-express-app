@@ -30,3 +30,13 @@
   border-radius: 20px;
   
 }
+
+
+
+@media only screen and (max-device-width: 480px) {
+  .menu {
+    display: flex;
+    flex-direction: column;
+    
+  }
+}
