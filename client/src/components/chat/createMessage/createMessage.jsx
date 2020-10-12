@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Button, Input } from 'antd'
-const { TextArea } = Input
 
 const CreateMessage = (props) => {
   let [inputValue, setInputValue] = useState('')
@@ -17,8 +16,8 @@ const CreateMessage = (props) => {
 
   return (
     <div className="bottom">
-      <TextArea
-        rows={1}
+      <Input
+        
         placeholder="Введите сообщение"
         onChange={onChangeMessage}
         onKeyPress={(e) => (e.key === 'Enter' ? onSendMessage() : null)}

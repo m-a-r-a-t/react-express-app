@@ -4,8 +4,6 @@ import Message from './message/message'
 import CreateMessage from './createMessage/createMessage'
 
 let Chat = (props) => {
- 
-
   return (
     <div className="container">
       <div className="messages-screen">
@@ -16,9 +14,7 @@ let Chat = (props) => {
         })}
         <div ref={props.messagesEndRef}></div>
       </div>
-      <CreateMessage
-        sendMessage={props.sendMessage}
-      />
+      <CreateMessage sendMessage={props.sendMessage} />
     </div>
   )
 }
